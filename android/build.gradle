@@ -1,0 +1,68 @@
+group 'com.mpviraniofficial.aura_vpn'
+version '1.0'
+
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "https://jitpack.io" }
+        maven { url 'https://maven.google.com' }
+        google()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.1.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        jcenter()
+        maven { url "https://jitpack.io" }
+        maven { url 'https://maven.google.com' }
+        google()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 30
+
+    defaultConfig {
+        minSdkVersion 16
+
+        buildConfigField "String", "BASE_HOST", "\"https://dqhc6ww7pinss.cloudfront.net\""
+        buildConfigField "String", "BASE_CARRIER_ID", "\"Vir_withdraws_table\""
+        buildConfigField "String", "BASE_OAUTH_METHOD", "\"anonymous\""
+
+        buildConfigField "String", "SHARED_PREFS", "\"NORTHGHOST_SHAREDPREFS\""
+        buildConfigField "String", "STORED_HOST_URL_KEY", "\"com.northghost.afvclient.STORED_HOST_KEY\""
+        buildConfigField "String", "STORED_CARRIER_ID_KEY", "\"com.northghost.afvclient.CARRIER_ID_KEY\""
+
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    signingConfigs {
+        release {
+
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation 'com.github.AnchorFreePartner.hydra-sdk-android:sdk:3.4.0'
+    implementation 'com.github.AnchorFreePartner.hydra-sdk-android:openvpn:3.4.0'
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}
