@@ -539,8 +539,19 @@ public class AuraVpnPlugin implements FlutterPlugin, MethodCallHandler {
         unifiedSDK.getBackend().countries(new Callback<AvailableCountries>() {
             @Override
             public void success(@NonNull AvailableCountries countries) {
-                showMessage(countries.getCountries().toString());
-                result.success(countries.getCountries().toString());
+//                showMessage(countries.getCountries().toString());
+
+                HashMap<String,Integer> HashMap=new HashMap<String,Integer>();
+
+                for (int i=0;i<countries.getCountries().size();i++)
+                {
+                    if (countries.getCountries().get(i).getServers()>0)
+                    {
+                        HashMap.put(countries.getCountries().get(i).getCountry(),countries.getCountries().get(i).getServers());
+                    }
+                }
+
+                result.success(HashMap);
             }
 
             @Override
