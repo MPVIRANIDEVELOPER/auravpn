@@ -355,6 +355,10 @@ public class AuraVpnPlugin implements FlutterPlugin, MethodCallHandler {
     protected void getTrafficUpdate() {
         UnifiedSDK.addTrafficListener((tx, rx) -> {
 
+            Map<String, Long> map = new HashMap<String, Long>();
+            map.put("tx", tx);
+            map.put("rx", rx);
+            result.success(map);
             //handle used traffic update
             //tx - bytes transfered
             //rx - bytes received
@@ -426,12 +430,15 @@ public class AuraVpnPlugin implements FlutterPlugin, MethodCallHandler {
             public void complete() {
 //                         hideLoginProgress();
 //                         updateUI();
+
+                result.success(true);
             }
 
             @Override
             public void error(VpnException e) {
 //                         hideLoginProgress();
 //                         updateUI();
+                result.success(false);
             }
         });
         selectedCountry = "";
@@ -523,12 +530,15 @@ public class AuraVpnPlugin implements FlutterPlugin, MethodCallHandler {
             public void complete() {
 //                         hideConnectProgress();
 //                         stopUIUpdateTask(true);
+                result.success(true);
+
             }
 
             @Override
             public void error(VpnException e) {
 //                         hideConnectProgress();
 //                         updateUI();
+                result.success(false);
 
                 handleError(e);
             }
@@ -561,7 +571,7 @@ public class AuraVpnPlugin implements FlutterPlugin, MethodCallHandler {
 //                showMessage(countries.getCountries().toString());
 
                 HashMap<String,Integer> HashMap=new HashMap<String,Integer>();
-
+                HashMap.put(UnifiedSDK.COUNTRY_OPTIMAL, 0);
                 for (int i=0;i<countries.getCountries().size();i++)
                 {
                     if (countries.getCountries().get(i).getServers()>0)
@@ -615,11 +625,14 @@ public class AuraVpnPlugin implements FlutterPlugin, MethodCallHandler {
             @Override
             public void success(@NonNull RemainingTraffic remainingTraffic) {
 //                         updateRemainingTraffic(remainingTraffic);
+
+                result.success(remainingTraffic);
             }
 
             @Override
             public void failure(@NonNull VpnException e) {
 //                         updateUI();
+                result.success(false);
                 handleError(e);
             }
         });
