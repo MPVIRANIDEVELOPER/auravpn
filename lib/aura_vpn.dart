@@ -75,4 +75,11 @@ class AuraVpn {
     await _channel.invokeMethod('onRegionSelected');
     return true;
   }
+
+  static Future<bool> connectServer(String country) async {
+    Map<String, String> cou = Map();
+    cou.putIfAbsent("country", () => country);
+    var result = await _channel.invokeMethod('connectServer', cou);
+    return result ?? false;
+  }
 }

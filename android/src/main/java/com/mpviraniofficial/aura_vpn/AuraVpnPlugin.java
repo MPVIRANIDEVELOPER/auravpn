@@ -16,7 +16,6 @@ import androidx.annotation.NonNull;
 
 import com.anchorfree.partner.api.ClientInfo;
 import com.anchorfree.partner.api.auth.AuthMethod;
-import com.anchorfree.partner.api.data.Country;
 import com.anchorfree.partner.api.response.AvailableCountries;
 import com.anchorfree.partner.api.response.RemainingTraffic;
 import com.anchorfree.partner.api.response.User;
@@ -196,8 +195,13 @@ public class AuraVpnPlugin implements FlutterPlugin, MethodCallHandler {
                 loginUser();
                 break;
             case "onRegionSelected":
-                Country item = call.argument("country");
+                String item = call.argument("country");
+
                 onRegionSelected(item);
+                break;
+            case "connectServer":
+                String country = call.argument("country");
+                onRegionSelected(country);
                 break;
             default:
                 result.notImplemented();
@@ -450,7 +454,7 @@ public class AuraVpnPlugin implements FlutterPlugin, MethodCallHandler {
 
     protected void connectToVpn() {
         //set selectedCountry  = "" for optimal country
-        selectedCountry = selectedCountry.equals("") ? selectedCountry : UnifiedSDK.COUNTRY_OPTIMAL;
+        selectedCountry = selectedCountry.equals("") ? UnifiedSDK.COUNTRY_OPTIMAL : selectedCountry;
 
         isLoggedIn(new Callback<Boolean>() {
             @Override
@@ -462,8 +466,10 @@ public class AuraVpnPlugin implements FlutterPlugin, MethodCallHandler {
                     fallbackOrder.add(CaketubeTransport.TRANSPORT_ID_UDP);
 //                             showConnectProgress();
                     List<String> bypassDomains = new LinkedList<>();
-                    bypassDomains.add("*domain1.com");
-                    bypassDomains.add("*domain2.com");
+                    bypassDomains.add("*facebook.com");
+                    bypassDomains.add("*wtfismyip.com");
+                    bypassDomains.add("*google.com");
+                    bypassDomains.add("*.google.*");
                     unifiedSDK.getVPN().start(new SessionConfig.Builder()
                             .withReason(TrackingConstants.GprReasons.M_UI)
                             .withTransportFallback(fallbackOrder)
@@ -475,6 +481,8 @@ public class AuraVpnPlugin implements FlutterPlugin, MethodCallHandler {
                         public void complete() {
 //                                     hideConnectProgress();
 //                                     startUIUpdateTask();
+
+                            result.success(true);
                         }
 
                         @Override
@@ -482,10 +490,21 @@ public class AuraVpnPlugin implements FlutterPlugin, MethodCallHandler {
 //                                     hideConnectProgress();
 //                                     updateUI();
 
+
+                            result.success(false);
+
                             handleError(e);
                         }
                     });
                 } else {
+                    if (unifiedSDK.getBackend().isLoggedIn()) {
+                        selectedCountry = "";
+                        connectToVpn();
+                    } else {
+                        loginToVpn();
+                        selectedCountry = "";
+                        connectToVpn();
+                    }
                     showMessage("Login please");
                 }
             }
@@ -615,10 +634,12 @@ public class AuraVpnPlugin implements FlutterPlugin, MethodCallHandler {
         loginToVpn();
     }
 
-    public void onRegionSelected(Country item) {
+    public void onRegionSelected(String country) {
 //        selectedCountry = "";
-        selectedCountry = item == null ? "" : item.getCountry();
+        selectedCountry = country == null ? "" : country;
 //                 updateUI();
+        Log.d("Country", country.toString());
+        showMessage(country);
         UnifiedSDK.getVpnState(new Callback<VPNState>() {
             @Override
             public void success(@NonNull VPNState state) {
@@ -637,6 +658,9 @@ public class AuraVpnPlugin implements FlutterPlugin, MethodCallHandler {
                             connectToVpn();
                         }
                     });
+                } else {
+                    connectToVpn();
+
                 }
             }
 

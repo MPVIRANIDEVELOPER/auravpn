@@ -20,6 +20,7 @@ class _MyAppState extends State<MyApp> {
   String login = "Log in";
   String connect = "Connect";
   String current_server = "Current Server";
+  String logout = "Logout";
 
   @override
   void initState() {
@@ -63,7 +64,7 @@ class _MyAppState extends State<MyApp> {
               ElevatedButton(
                 child: Text(connect),
                 onPressed: () async {
-                  bool result = await AuraVpn.onRegionSelected;
+                  bool result = await AuraVpn.connectServer('no');
                   print(result);
                 },
               ),
@@ -72,6 +73,18 @@ class _MyAppState extends State<MyApp> {
                 onPressed: () async {
                   var server_list = await AuraVpn.chooseServer;
                   print(server_list.toString());
+                },
+              ),
+              ElevatedButton(
+                child: Text(logout),
+                onPressed: () async {
+                  await AuraVpn.logOutFromVpn;
+                },
+              ),
+              ElevatedButton(
+                child: Text("Disconnect"),
+                onPressed: () async {
+                  await AuraVpn.disconnectFromVpn;
                 },
               ),
             ],
