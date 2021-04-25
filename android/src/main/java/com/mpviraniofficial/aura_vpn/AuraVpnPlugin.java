@@ -571,7 +571,7 @@ public class AuraVpnPlugin implements FlutterPlugin, MethodCallHandler {
 //                showMessage(countries.getCountries().toString());
 
                 HashMap<String,Integer> HashMap=new HashMap<String,Integer>();
-                HashMap.put(UnifiedSDK.COUNTRY_OPTIMAL, 0);
+
                 for (int i=0;i<countries.getCountries().size();i++)
                 {
                     if (countries.getCountries().get(i).getServers()>0)
