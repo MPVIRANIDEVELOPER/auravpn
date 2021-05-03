@@ -46,6 +46,12 @@ class AuraVpn {
     return l;
   }
 
+  static Future get getTrafficUpdate async {
+    var l = await _channel.invokeMethod('getTrafficUpdate');
+    print(l);
+    return l;
+  }
+
   static Future<bool> get getCurrentServer async {
     await _channel.invokeMethod('getCurrentServer');
     return true;

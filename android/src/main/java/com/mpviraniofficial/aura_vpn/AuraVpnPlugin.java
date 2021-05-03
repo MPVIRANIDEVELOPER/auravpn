@@ -89,7 +89,8 @@ import static android.content.ContentValues.TAG;
 /**
  * AuraVpnPlugin
  */
-public class AuraVpnPlugin implements FlutterPlugin, MethodCallHandler {
+public class
+AuraVpnPlugin implements FlutterPlugin, MethodCallHandler {
 
     private MethodChannel channel;
     private Context applicationContext;
